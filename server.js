@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 dotenv.config({ path: "config.env" });
 const dbConnection = require("./config/database");
 const categoryRoute = require("./routes/categoryRoute");
+const { createCategories } = require("./services/categoryService");
 
 /* --------------------------- Connect to Database -------------------------- */
 dbConnection();
