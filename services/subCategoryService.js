@@ -38,8 +38,8 @@ exports.getSubCategories = asyncHandler(async (req, res, next) => {
   /* --------------------------- @ desc Get SubCategories --------------------------- */
   /* --------------------------- @ Route GET /api/v1/subcategories --------------------------- */
   /* --------------------------- @ Access Public --------------------------- */
-  const page = req.query.page || 1;
-  const limit = req.query.limit || 5;
+  const page = req.query.page * 1  || 1;
+  const limit = req.query.limit * 1  || 5;
   const skip = (page - 1) * limit;
 
   const subcategory = await SubCategoryModel.find(req.filterObj)
