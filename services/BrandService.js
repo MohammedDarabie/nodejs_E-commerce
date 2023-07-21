@@ -2,7 +2,29 @@ const { default: slugify } = require("slugify");
 const asyncHandler = require("express-async-handler");
 const BrandModel = require("../models/BrandModel");
 const ApiError = require("../utils/apiError");
+const APIFeatures = require("../utils/apiFeatures");
 //
+
+exports.getAllBrands = asyncHandler(async (req, res, next) => {
+  /* ---------------------------- @ desc Get All Product --------------------------- */
+  /* ---------------------------- @ Route Get /api/v1/products --------------------------- */
+  /* ---------------------------- @ Access Public  --------------------------- */
+  const documentCounts = await BrandModel.countDocuments();
+  const apiFeatures = new APIFeatures(BrandModel.find(), req.query)
+    .paginate(documentCounts)
+    .filter()
+    .search()
+    .limit()
+    .sort();
+  const { mongooseQuery, paginationResult } = apiFeatures;
+  const brands = await mongooseQuery;
+  return res.json({
+    status: res.status,
+    dataLength: brands.length,
+    paginationResult,
+    data: brands,
+  });
+});
 
 exports.createBrand = asyncHandler(async (req, res, next) => {
   /* ---------------------------- @ desc Create Product --------------------------- */
@@ -33,18 +55,6 @@ exports.getSpecificBrand = asyncHandler(async (req, res, next) => {
   return res.json({
     status: res.status,
     product,
-  });
-});
-
-exports.getAllBrands = asyncHandler(async (req, res, next) => {
-  /* ---------------------------- @ desc Get All Product --------------------------- */
-  /* ---------------------------- @ Route Get /api/v1/products --------------------------- */
-  /* ---------------------------- @ Access Public  --------------------------- */
-  const allBrands = await BrandModel.find();
-  return res.json({
-    status: res.status,
-    dataLength: allBrands.length,
-    data: allBrands,
   });
 });
 

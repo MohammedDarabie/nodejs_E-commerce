@@ -46,13 +46,20 @@ class APIFeatures {
 
   /* --------------------------------- Search --------------------------------- */
 
-  search() {
+  search(modelName) {
     if (this.queryString.keyword) {
       const query = {};
-      query.$or = [
-        { title: { $regex: this.queryString.keyword, $options: "i" } },
-        { description: { $regex: this.queryString.keyword, $options: "i" } },
-      ];
+      if(modelName === "Product"){
+        query.$or = [
+          { title: { $regex: this.queryString.keyword, $options: "i" } },
+          { description: { $regex: this.queryString.keyword, $options: "i" } },
+        ];
+      } else {
+        query.$or = [
+          { name: { $regex: this.queryString.keyword, $options: "i" } },
+        ];
+      }
+      
       this.mongooseQuery = this.mongooseQuery.find(query);
     }
     return this;
