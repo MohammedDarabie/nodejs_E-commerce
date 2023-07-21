@@ -1,11 +1,11 @@
-
-// 
+//
 class APIFeatures {
   constructor(mongooseQuery, queryString) {
     this.mongooseQuery = mongooseQuery;
     this.queryString = queryString;
     // console.log("mongooseQuery : ", this.mongooseQuery);
   }
+  /* --------------------------------- Filter --------------------------------- */
 
   filter() {
     const queryStringObject = { ...this.queryString };
@@ -20,6 +20,8 @@ class APIFeatures {
     return this;
   }
 
+  /* ---------------------------------- Sort ---------------------------------- */
+
   sort() {
     if (this.queryString.sort) {
       const sortBy = this.queryString.sort.split(",").join(" ");
@@ -29,6 +31,8 @@ class APIFeatures {
     }
     return this;
   }
+
+  /* ---------------------------------- Limit --------------------------------- */
 
   limit() {
     if (this.queryString.fields) {
@@ -40,22 +44,21 @@ class APIFeatures {
     return this;
   }
 
-  search(modelName = "") {
-    if (this.queryString.keyword) {
-      let query = {};
-      if (modelName === "Products") {
-        query.$or = [
-          { title: { $regex: this.queryString.keyword, $options: "i" } },
-          { description: { $regex: this.queryString.keyword, $options: "i" } },
-        ];
-      } else {
-        query = { name: { $regex: this.queryString.keyword, $options: "i" } };
-      }
+  /* --------------------------------- Search --------------------------------- */
 
+  search() {
+    if (this.queryString.keyword) {
+      const query = {};
+      query.$or = [
+        { title: { $regex: this.queryString.keyword, $options: "i" } },
+        { description: { $regex: this.queryString.keyword, $options: "i" } },
+      ];
       this.mongooseQuery = this.mongooseQuery.find(query);
     }
     return this;
   }
+
+  /* -------------------------------- Paginate -------------------------------- */
 
   paginate(countDocuments) {
     const page = this.queryString.page * 1 || 1;
