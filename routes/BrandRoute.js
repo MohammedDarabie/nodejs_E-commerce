@@ -1,7 +1,7 @@
 const express = require("express");
 const {
   createBrand,
-  getAllBrands,
+  getBrands,
   updateBrand,
   getSpecificBrand,
   deleteBrand,
@@ -15,7 +15,7 @@ const {
 
 const router = express.Router();
 
-router.route("/").get(getAllBrands).post(createBrandValidator, createBrand);
+router.route("/").get(getBrands).post(createBrandValidator, createBrand);
 
 router
   .route("/:id")
