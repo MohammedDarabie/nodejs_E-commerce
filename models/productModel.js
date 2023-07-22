@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-// 
+//
 const productSchema = new mongoose.Schema(
   {
     title: {
@@ -69,6 +69,15 @@ const productSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+/* ------------------------ Mongoose Query middleware ----------------------- */
+productSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "category",
+    select: "name -_id",
+  });
+  next();
+});
 
 const ProductModel = mongoose.model("Product", productSchema);
 
