@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
@@ -21,6 +22,8 @@ const app = express();
 /* ------------------------------- MiddleWares ------------------------------ */
 
 app.use(express.json());
+// Access Static Files
+app.use(express.static(path.join(__dirname , "uploads")))
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
   console.log("mode : ", process.env.NODE_ENV);

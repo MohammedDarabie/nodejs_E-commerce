@@ -25,10 +25,12 @@ exports.getSpecificBrandValidator = [
 
 exports.updateBrandValidator = [
   check("id").isMongoId().withMessage("Invalid Category id format"),
-  body("name").custom((val, { req }) => {
-    req.body.slug = slugify(val);
-    return true;
-  }),
+  body("name")
+    .optional()
+    .custom((val, { req }) => {
+      req.body.slug = slugify(val);
+      return true;
+    }),
   validatorMiddleware,
 ];
 
