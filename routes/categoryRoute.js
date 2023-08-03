@@ -40,8 +40,15 @@ router
 router
   .route("/:id")
   .get(getCategoryValidator, getCategory)
-  .delete(deleteCategoryValidator, deleteCategory)
+  .delete(
+    authService.protect,
+    authService.allowedTo("admin"),
+    deleteCategoryValidator,
+    deleteCategory
+  )
   .put(
+    authService.protect,
+    authService.allowedTo("seller", "admin"),
     uploadCategoryImage,
     resizeImage,
     updateCategoryValidator,

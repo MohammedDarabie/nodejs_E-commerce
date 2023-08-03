@@ -26,17 +26,19 @@ const userSchema = mongoose.Schema(
       required: [true, "Password is Required"],
       minlength: [6, "Too short Password"],
     },
-    passwordChangetAt : Date,
+    passwordChangetAt: Date,
+    passwordResetCode: String,
+    passwordResetExpires: Date,
+    passwordResetVerified: Boolean,
     role: {
       type: String,
-      enum: ["user", "seller",  "admin"],
+      enum: ["user", "seller", "admin"],
       default: "user",
     },
     active: {
       type: Boolean,
       default: true,
     },
-    
   },
   { timestamps: true }
 );
@@ -47,9 +49,6 @@ userSchema.pre("save", async function (next) {
   this.password = await bcrypt.hash(this.password, 12);
   next();
 });
-
-
-
 
 const UserModel = mongoose.model("User", userSchema);
 
