@@ -8,6 +8,7 @@ const ApiError = require("../utils/apiError");
 const factory = require("./handlerFactory");
 const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
 const UserModel = require("../models/userModel");
+const tokengenerate = require("../utils/generateToken");
 //
 
 exports.uploadUserImage = uploadSingleImage("profileImg");
@@ -27,19 +28,19 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
 });
 /* ---------------------------- @ desc Get All Users --------------------------- */
 /* ---------------------------- @ Route Get /api/v1/users --------------------------- */
-/* ---------------------------- @ Access Private  --------------------------- */
+/* ---------------------------- @ Access Admin  --------------------------- */
 exports.getUsers = factory.getAll(UserModel);
 /* ---------------------------- @ desc Get Specific User --------------------------- */
 /* ---------------------------- @ Route get /api/v1/users/:id --------------------------- */
-/* ---------------------------- @ Access Private  --------------------------- */
+/* ---------------------------- @ Access Admin  --------------------------- */
 exports.getSpecificUser = factory.getOne(UserModel);
 /* ---------------------------- @ desc Create User --------------------------- */
 /* ---------------------------- @ Route Post /api/v1/users --------------------------- */
-/* ---------------------------- @ Access Private  --------------------------- */
+/* ---------------------------- @ Access Admin  --------------------------- */
 exports.createUser = factory.createOne(UserModel);
 /* ---------------------------- @ desc Update users --------------------------- */
 /* ---------------------------- @ Route PUT /api/v1/users/:id --------------------------- */
-/* ---------------------------- @ Access Private  --------------------------- */
+/* ---------------------------- @ Access Admin  --------------------------- */
 exports.updateUser = asyncHandler(async (req, res, next) => {
   const document = await UserModel.findByIdAndUpdate(
     req.params.id,
@@ -69,11 +70,11 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
 });
 /* ---------------------------- @ desc Delete users --------------------------- */
 /* ---------------------------- @ Route delete /api/v1/users/:id --------------------------- */
-/* ---------------------------- @ Access Private  --------------------------- */
+/* ---------------------------- @ Access Admin  --------------------------- */
 exports.deleteUser = factory.deleteOne(UserModel);
 /* ---------------------------- @ desc Update user Password --------------------------- */
-/* ---------------------------- @ Route delete /api/v1/users/:id --------------------------- */
-/* ---------------------------- @ Access Private  --------------------------- */
+/* ---------------------------- @ Route put /api/v1/users/:id --------------------------- */
+/* ---------------------------- @ Access Admin  --------------------------- */
 exports.updateUserPassword = asyncHandler(async (req, res, next) => {
   const document = await UserModel.findByIdAndUpdate(
     req.params.id,
@@ -93,5 +94,76 @@ exports.updateUserPassword = asyncHandler(async (req, res, next) => {
   res.json({
     status: 200,
     document,
+  });
+});
+
+/* ---------------------------- @ desc Get Logged User --------------------------- */
+/* ---------------------------- @ Route get /api/v1/users/getMe --------------------------- */
+/* ---------------------------- @ Access Protect  --------------------------- */
+exports.getLoggedUserData = asyncHandler(async (req, res, next) => {
+  req.params.id = req.user._id;
+  next();
+});
+
+/* ---------------------------- @ desc Update Password Logged User --------------------------- */
+/* ---------------------------- @ Route put /api/v1/users/updateMyPassword --------------------------- */
+/* ---------------------------- @ Access Protect  --------------------------- */
+exports.updateLoggedUserPassword = asyncHandler(async (req, res, next) => {
+  const user = await UserModel.findByIdAndUpdate(
+    req.user._id,
+    {
+      password: await bcrypt.hash(req.body.password, 12),
+      passwordChangetAt: Date.now(),
+    },
+    {
+      new: true,
+    }
+  );
+  const token = tokengenerate(user._id);
+
+  res.status(200).json({
+    message: "Successfully Changed",
+    data: user,
+    token,
+  });
+});
+
+/* ---------------------------- @ desc Update Logged User Data --------------------------- */
+/* ---------------------------- @ Route put /api/v1/users/updateMe --------------------------- */
+/* ---------------------------- @ Access Protect  --------------------------- */
+exports.updateLoggedUserData = asyncHandler(async (req, res, next) => {
+  const updatedUser = await UserModel.findByIdAndUpdate(
+    req.user._id,
+    {
+      name: req.body.name,
+      email: req.body.email,
+      phone: req.body.phone,
+    },
+    {
+      new: true,
+    }
+  );
+
+  res.status(200).json({
+    data: updatedUser,
+  });
+});
+
+/* ---------------------------- @ desc Deactivate Logged User Data --------------------------- */
+/* ---------------------------- @ Route delete /api/v1/users/deleteMe --------------------------- */
+/* ---------------------------- @ Access Protect  --------------------------- */
+exports.deleteLoggedUser = asyncHandler(async (req, res, next) => {
+  const user = await UserModel.findByIdAndUpdate(
+    req.user._id,
+    {
+      active: false,
+    },
+    {
+      new: true,
+    }
+  );
+  res.status(200).json({
+    message: "Successfully Deactivated",
+    data: user,
   });
 });

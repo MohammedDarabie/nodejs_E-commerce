@@ -124,3 +124,31 @@ exports.updateUserPasswordValidator = [
     }),
   validatorMiddleware,
 ];
+
+
+
+exports.updateLoggedUserValidator = [
+  body("name")
+    .optional()
+    .custom((val, { req }) => {
+      req.body.slug = slugify(val);
+      return true;
+    }),
+  check("email")
+    .notEmpty()
+    .withMessage("Email required")
+    .isEmail()
+    .withMessage("Invalid Email Address")
+    .custom((val) =>
+      UserModel.findOne({ email: val }).then((user) => {
+        if (user) {
+          return Promise.reject(new Error("Email already Exists"));
+        }
+      })
+    ),
+  check("phone")
+    .optional()
+    .isMobilePhone(["ar-SA", "ar-EG"])
+    .withMessage("Invalid Phone Number (EG-SA)"),
+  validatorMiddleware,
+];

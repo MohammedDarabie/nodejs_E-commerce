@@ -6,15 +6,9 @@ const asyncHandler = require("express-async-handler");
 const ApiError = require("../utils/apiError");
 const UserModel = require("../models/userModel");
 const sendEmail = require("../utils/SendEmail");
+const tokengenerate = require("../utils/generateToken");
 
-/* ----------------------------- Token generator ---------------------------- */
-const tokengenerate = (id) => {
-  const token = jwt.sign({ userId: id }, process.env.JWT_SECRET_KEY, {
-    expiresIn: process.env.JWT_EXPIRE_TIME,
-  });
 
-  return token;
-};
 /* --------------------------- Allowed To function -------------------------- */
 // Admin , Seller
 exports.allowedTo = (...roles) =>
