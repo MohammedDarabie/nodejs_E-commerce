@@ -49,7 +49,7 @@ exports.getProducts = factory.getAll(ProductModel, "Product");
 /* ---------------------------- @ desc Get Specific Product --------------------------- */
 /* ---------------------------- @ Route GET /api/v1/products/:id --------------------------- */
 /* ---------------------------- @ Access Public  --------------------------- */
-exports.getProduct = factory.getOne(ProductModel);
+exports.getProduct = factory.getOne(ProductModel, "reviews");
 /* ---------------------------- @ desc Create Products --------------------------- */
 /* ---------------------------- @ Route POST /api/v1/products --------------------------- */
 /* ---------------------------- @ Access Private --------------------------- */

@@ -13,7 +13,7 @@ exports.deleteOne = (Model) =>
     if (!document) {
       return next(new ApiError("Couldn't find Doc with id : ${}", 400));
     }
-
+    document.remove();
     return res.json({
       status: res.status,
       message: "Deleted Successfully",
@@ -33,7 +33,7 @@ exports.updateOne = (Model) =>
         new ApiError(`Couldn't Update the doc with id: ${req.params.id}`, 400)
       );
     }
-
+    document.save();
     return res.json({
       status: res.status,
       document,
@@ -54,10 +54,14 @@ exports.createOne = (Model) =>
 
 /* ----------------------------- Get One Handler ---------------------------- */
 //
-exports.getOne = (Model) =>
+exports.getOne = (Model, populationOption) =>
   asyncHandler(async (req, res, next) => {
     const { id } = req.params;
-    const document = await Model.findById(id);
+    let query = Model.findById(id);
+    if (populationOption) {
+      query = query.populate(populationOption);
+    }
+    const document = await query;
     if (!document) {
       return next(new ApiError("No document Found", 400));
     }

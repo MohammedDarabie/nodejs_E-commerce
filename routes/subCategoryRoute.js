@@ -12,7 +12,7 @@ const authService = require("../services/authService");
 //
 const {
   createSubCategoryValidator,
-  getCategoryValidator,
+  getSubCategoryValidator,
   updateSubCategoryValidator,
   deleteSubCategoryValidator,
 } = require("../utils/Validators/subCategoryValidator");
@@ -39,7 +39,7 @@ router
 
 router
   .route("/:id")
-  .get(getCategoryValidator, getSubCategory)
+  .get(getSubCategoryValidator, getSubCategory)
   .put(
     authService.protect,
     authService.allowedTo("seller", "admin"),

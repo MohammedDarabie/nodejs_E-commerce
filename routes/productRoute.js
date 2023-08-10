@@ -17,7 +17,9 @@ const {
   updateProductValidator,
   deleteProductValidator,
 } = require("../utils/Validators/productValidator");
+const reviewsRoute = require("./reviewRoute");
 /* --------------------------------- Routes --------------------------------- */
+router.use("/:productId/reviews", reviewsRoute);
 router
   .route("/")
   .get(getProducts)

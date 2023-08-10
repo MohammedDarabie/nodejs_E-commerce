@@ -27,7 +27,7 @@ exports.createSubCategoryValidator = [
 ];
 
 /* --------------------- Validate get Specific Category --------------------- */
-exports.getCategoryValidator = [
+exports.getSubCategoryValidator = [
   check("id").isMongoId().withMessage("Invalid SubCategory ID"),
   validatorMiddleware,
 ];
