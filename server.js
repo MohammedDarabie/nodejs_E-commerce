@@ -3,6 +3,9 @@ const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 const cors = require("cors");
+// eslint-disable-next-line import/no-extraneous-dependencies
+const compression = require("compression");
+
 //
 //
 dotenv.config({ path: "config.env" });
@@ -19,7 +22,9 @@ dbConnection();
 /* ------------------------------ * Express App ----------------------------- */
 const app = express();
 /* ------------------------------- MiddleWares ------------------------------ */
-app.use(cors({}));
+app.use(cors());
+app.options("*", cors());
+app.use(compression());
 app.use(express.json());
 // Access Static Files
 app.use(express.static(path.join(__dirname, "uploads")));
