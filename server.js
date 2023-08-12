@@ -11,15 +11,8 @@ const dbConnection = require("./config/database");
 const ApiError = require("./utils/apiError");
 const errorMiddleware = require("./middlewares/errorMiddleware");
 /* ------------------------------- Routes ------------------------------- */
-const categoryRoute = require("./routes/categoryRoute");
-const subCategoryRoute = require("./routes/subCategoryRoute");
-const BrandRoute = require("./routes/BrandRoute");
-const ProductRoute = require("./routes/productRoute");
-const UserRoute = require("./routes/userRoute");
-const authRoute = require("./routes/authRoute");
-const reviewRoute = require("./routes/reviewRoute");
-const wishListRoute = require("./routes/wishlistRoute");
-const addressesRoute = require("./routes/addressesRoute");
+const mountRoutes = require("./routes");
+
 //
 /* --------------------------- Connect to Database -------------------------- */
 dbConnection();
@@ -38,15 +31,7 @@ if (process.env.NODE_ENV === "development") {
 }
 
 /* ------------------------------- mount Route ------------------------------ */
-app.use("/api/v1/categories", categoryRoute);
-app.use("/api/v1/subcategories", subCategoryRoute);
-app.use("/api/v1/brands", BrandRoute);
-app.use("/api/v1/products", ProductRoute);
-app.use("/api/v1/users", UserRoute);
-app.use("/api/v1/auth", authRoute);
-app.use("/api/v1/reviews", reviewRoute);
-app.use("/api/v1/wishlist", wishListRoute);
-app.use("/api/v1/addresses", addressesRoute);
+mountRoutes(app);
 /* ---------------------------- Not Found Routes ---------------------------- */
 app.all("*", (req, res, next) => {
   next(new ApiError(`Can't find this Route : ${req.originalUrl}`, 400));

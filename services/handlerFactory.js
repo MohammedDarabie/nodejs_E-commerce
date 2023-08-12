@@ -13,7 +13,6 @@ exports.deleteOne = (Model) =>
     if (!document) {
       return next(new ApiError("Couldn't find Doc with id : ${}", 400));
     }
-    document.remove();
     return res.json({
       status: res.status,
       message: "Deleted Successfully",
