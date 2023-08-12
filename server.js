@@ -23,6 +23,7 @@ dbConnection();
 const app = express();
 /* ------------------------------- MiddleWares ------------------------------ */
 app.use(cors());
+console.log("Hello World");
 app.options("*", cors());
 app.use(compression());
 app.use(express.json());
